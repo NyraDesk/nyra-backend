@@ -45,13 +45,6 @@ npm start
 - `POST /api/ai/analyze-text` - Analizza testo con AI
 - `POST /api/ai/generate-content` - Genera contenuto con AI
 
-### Excel
-- `POST /api/excel/upload` - Upload Excel file
-- `POST /api/excel/analyze` - Analyze Excel with AI
-- `GET /api/excel/files` - List uploaded files
-- `GET /api/excel/file/:id` - Get file data
-- `DELETE /api/excel/file/:id` - Delete file
-
 ### Health
 - `GET /health` - Health check
 
@@ -91,8 +84,7 @@ backend/
 ├── routes/               # Route API
 │   ├── auth.js          # Autenticazione
 │   ├── email.js         # Gestione email
-│   ├── ai.js            # AI e OpenRouter
-│   └── excel.js         # Excel processing
+│   └── ai.js            # AI e OpenRouter
 ├── services/            # Servizi business logic
 │   ├── openrouter.js    # Servizio OpenRouter
 │   ├── gmail.js         # Servizio Gmail
@@ -101,7 +93,7 @@ backend/
     └── auth.js          # Autenticazione JWT
 ```
 
-## �� Autenticazione
+## 🔐 Autenticazione
 
 Il backend usa JWT per l'autenticazione. Include i token Google OAuth nel JWT per accesso diretto alle API Google.
 
@@ -149,20 +141,11 @@ POST /api/ai/chat
 
 ## 📊 Excel Processing
 
-### Upload Excel
+### Parse Excel per Email
 ```javascript
-POST /api/excel/upload
+POST /api/email/parse-excel
 Content-Type: multipart/form-data
 file: <excel_file>
-```
-
-### Analyze Excel
-```javascript
-POST /api/excel/analyze
-{
-  "fileId": "file_id",
-  "query": "Analizza questi dati"
-}
 ```
 
 ## 🛡️ Sicurezza
@@ -213,6 +196,54 @@ POST /api/excel/analyze
 4. **Deploy Automatico**
    - Render deployerà automaticamente ad ogni push
    - URL backend: `https://your-service-name.onrender.com`
+
+5. **Configurazione Render.com Specifica**
+   - **Auto-Deploy**: Abilita per deploy automatico
+   - **Health Check**: `/health` endpoint
+   - **Instance Type**: Starter (gratuito) o Professional
+   - **Region**: Scegli la regione più vicina
+   - **Environment Variables**: Configura tutte le variabili necessarie
+
+6. **Monitoraggio Render.com**
+   - Dashboard per monitorare performance
+   - Logs in tempo reale
+   - Metriche CPU e memoria
+   - Alert per downtime
+
+### Vercel (Alternativa)
+
+1. **Installa Vercel CLI**
+   ```bash
+   npm i -g vercel
+   ```
+
+2. **Deploy**
+   ```bash
+   vercel --prod
+   ```
+
+3. **Configurazione**
+   - Aggiungi variabili d'ambiente su Vercel Dashboard
+   - URL backend: `https://your-project.vercel.app`
+
+### Docker (Locale/Server Proprio)
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+EXPOSE 3001
+CMD ["npm", "start"]
+```
+
+### PM2 (Server Proprio)
+```bash
+npm install -g pm2
+pm2 start server.js --name nyra-backend
+pm2 startup
+pm2 save
+```
 
 ## 📝 Logs
 
