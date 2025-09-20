@@ -15,6 +15,8 @@ const excelRoutes = require('./routes/excel');
 
 // Import middleware
 const authMiddleware = require('./middleware/auth');
+const intentMiddleware = require('./middleware/intentMiddleware');
+const testIntentRoutes = require('./routes/testIntent');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -54,6 +56,12 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Test routes per Intent Analyzer
+app.use('/api', testIntentRoutes);
+
+// Applica intent middleware alle chat routes
+app.use('/api/chat', intentMiddleware);
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/auth', authOAuthRoutes);  // Google OAuth routes
@@ -91,6 +99,8 @@ app.listen(PORT, '0.0.0.0', () => {
   // Log available routes
   console.log('\n📋 Available API Routes:');
   console.log('  GET  /health - Health check');
+  console.log('  POST /api/test-intent - Test Intent Analysis');
+  console.log('  GET  /api/intent-stats - Intent Analyzer stats');
   console.log('  GET  /auth/google/start - Start Google OAuth');
   console.log('  GET  /auth/google/callback - Google OAuth callback');
   console.log('  GET  /auth/google/status - Check auth status');
@@ -99,7 +109,7 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log('  POST /api/email/generate - Generate email with AI');
   console.log('  POST /api/email/send - Send email via Gmail');
   console.log('  POST /api/email/parse-excel - Parse Excel file');
-  console.log('  POST /api/ai/chat - Chat with OpenRouter');
+  console.log('  POST /api/ai/chat - Chat with OpenRouter (with Intent Analysis)');
   console.log('  GET  /api/ai/test - Test AI connection');
   console.log('  POST /api/excel/upload - Upload Excel file');
   console.log('  POST /api/excel/analyze - Analyze Excel with AI');
